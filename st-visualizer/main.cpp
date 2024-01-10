@@ -15,56 +15,26 @@ using std::string;
 using std::vector;
 using std::cout;
 using std::endl;
+using std::ifstream;
+using std::stringstream;
+using std::cerr;
 
-// https://wias-berlin.de/software/tetgen/
-
-// argv[1] = 0 use hard coded path, 1 use args[2]
-// argv[2] = json
-// TODO: Add error handling for json parsing
+// Mode 0: ./st-visualizer 0 <config.json file path>
+// Mode 1: ./st-visualizer 1 <config.json file content>
 int main(int argc, char *argv[])
 {
     json config;
     if (strcmp(argv[1], "0") == 0)
     {
-        config = json::parse(R"(
-				{
-					"fileName": "../picture/AlignmentImages/NMKimage/NMK_20201201_cell_type_coord_allspots.tsv",
-					"alignmentFile": "../data/NMK_F_transformation_pt_coord.csv",
-					"target": "bin/nmk-test-output.json",
-					"shrink": 0,
-					"sliceNames": ["NMK_F_U1","NMK_F_U2","NMK_F_U3","NMK_F_U4"],
-					"featureCols": [6,7,8,9,10,11,12,13,14,15],
-					"sliceIndex": 1,
-					"tissueIndex": 2,
-					"rowIndex": 3,
-					"colIndex": 4,
-					"clusterIndex": 5,
-					"zDistance": 100,
-                    "resultExport": false,
-                    "objExport": false,
-                    "featureObj": "bin/features/",
-                    "clusterObj": "bin/clusters/"
-				}
-			)");
-//        config = json::parse(R"(
-//				{
-//					"fileName": "../picture/ToyData/toy_data.tsv",
-//					"alignmentFile": "../picture/ToyData/alignment.csv",
-//					"target": "../picture/ToyData/output.json",
-//					"shrink": 0,
-//					"sliceNames": ["slice_1", "slice_2", "slice_3"],
-//					"featureCols": [6,7],
-//					"sliceIndex": 1,
-//					"tissueIndex": 2,
-//					"rowIndex": 3,
-//					"colIndex": 4,
-//					"clusterIndex": 5,
-//					"zDistance": 100,
-//                    "objExport": false,
-//                    "featureObj": "../picture/ToyData/features/",
-//                    "clusterObj": "../picture/ToyData/clusters/"
-//				}
-//			)");
+        ifstream file(argv[2]);
+        if (file.is_open()) {
+            string content((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
+            file.close();
+            config = json::parse(content);
+        } else {
+            cerr << "Error opening the file" << endl;
+            return -1;
+        }
     }
     else if (strcmp(argv[1], "1") == 0)
     {
@@ -72,15 +42,14 @@ int main(int argc, char *argv[])
     }
     else
     {
-        std::cout << "Usage: " << argv[0] << " <mode> <json>" << std::endl;
+        std::cout << "Usage: " << argv[0] << " <mode> <argument>" << std::endl;
         return 1;
     }
 
     string alignmentFile = config.at("alignmentFile").get<string>();
     string target = config.at("target").get<string>();
     float shrink = config.at("shrink").get<float>();
-    std::cout << "shrink" << shrink << std::endl;
-    std::vector<std::string> sliceNames;
+    vector<string> sliceNames;
     for (const auto &name : config.at("sliceNames"))
     {
         if (name.is_string())
@@ -88,7 +57,7 @@ int main(int argc, char *argv[])
             sliceNames.push_back(name.get<std::string>());
         }
     }
-    std::vector<unsigned> featureCols;
+    vector<unsigned> featureCols;
     for (const auto &name : config.at("featureCols"))
     {
         featureCols.push_back(name.get<unsigned>());

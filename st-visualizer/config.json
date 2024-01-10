@@ -1,0 +1,18 @@
+{
+  "fileName": "/Users/yin/Code/masters-project/st-visualizer-data/batch-2/HT339B1_H3/HT339B1_H3_info_table.tsv",
+  "alignmentFile": "/Users/yin/Code/masters-project/st-visualizer-data/batch-2/HT339B1_H3/alignments.csv",
+  "target": "/Users/yin/Code/masters-project/st-visualizer-data/batch-2/HT339B1_H3/output.json",
+  "shrink": 0,
+  "sliceNames": ["HT339B1-S1H3Fc2U1Z1Bs1","HT339B1-S1H3Fc2U2Bs2"],
+  "featureCols": [10,11,12,13,14,15,16,17,18,19],
+  "sliceIndex": 2,
+  "tissueIndex": 5,
+  "rowIndex": 6,
+  "colIndex": 7,
+  "clusterIndex": 4,
+  "zDistance": 500,
+  "resultExport": true,
+  "objExport": true,
+  "featureObj": "/Users/yin/Code/masters-project/st-visualizer-data/batch-2/HT339B1_H3/features/",
+  "clusterObj": "/Users/yin/Code/masters-project/st-visualizer-data/batch-2/HT339B1_H3/clusters/"
+}

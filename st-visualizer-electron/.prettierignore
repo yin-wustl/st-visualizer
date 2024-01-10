@@ -1,9 +1,0 @@
-node_modules
-.meteor
-
-# Ignore artifacts:
-build
-coverage
-*.json
-*.css
-*.svg

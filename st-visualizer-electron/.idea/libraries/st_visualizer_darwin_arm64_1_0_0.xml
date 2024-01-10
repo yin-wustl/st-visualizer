@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="st-visualizer-darwin-arm64-1.0.0">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/out/make/zip/darwin/arm64/st-visualizer-darwin-arm64-1.0.0.zip!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

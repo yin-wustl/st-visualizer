@@ -12,13 +12,13 @@ import {
   Paper,
 } from "@mui/material";
 import { ArrowLeft, ArrowRight } from "@mui/icons-material";
-import ImageIcon from '@mui/icons-material/Image';
-import OpacityIcon from '@mui/icons-material/Opacity';
-import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
-import SwapVertIcon from '@mui/icons-material/SwapVert';
-import LoopIcon from '@mui/icons-material/Loop';
-import ClearIcon from '@mui/icons-material/Clear';
-import ReplayIcon from '@mui/icons-material/Replay';
+import ImageIcon from "@mui/icons-material/Image";
+import OpacityIcon from "@mui/icons-material/Opacity";
+import SwapHorizIcon from "@mui/icons-material/SwapHoriz";
+import SwapVertIcon from "@mui/icons-material/SwapVert";
+import LoopIcon from "@mui/icons-material/Loop";
+import ClearIcon from "@mui/icons-material/Clear";
+import ReplayIcon from "@mui/icons-material/Replay";
 import { importStateType, colTypes } from "../../api/constants";
 import _ from "lodash";
 
@@ -111,10 +111,10 @@ export const AlignmentPage = ({
       i === 0
         ? undefined
         : {
-          x: parseFloat(row[xCol]),
-          y: parseFloat(row[yCol]),
-          slice: importState.tsvData[importState[colTypes.slice]],
-        }
+            x: parseFloat(row[xCol]),
+            y: parseFloat(row[yCol]),
+            slice: importState.tsvData[importState[colTypes.slice]],
+          }
     )
     .filter((v) => !!v);
   // console.log(currentVals);
@@ -149,7 +149,7 @@ export const AlignmentPage = ({
               style={{
                 borderBottom:
                   selectedImg !== null &&
-                    (i === selectedImg || i === selectedImg - 1)
+                  (i === selectedImg || i === selectedImg - 1)
                     ? "solid 5px black"
                     : undefined,
               }}
@@ -325,7 +325,6 @@ export const AlignmentPage = ({
 
         <Grid item container sx={{ minWidth: 500 }} xs={6}>
           <Paper elevation={9} style={{ padding: 20 }}>
-
             <Box sx={{ width: 500 }}>
               <Typography id="input-slider" gutterBottom>
                 Opacity
@@ -349,15 +348,13 @@ export const AlignmentPage = ({
                     style={{ width: 80 }}
                     value={opacity}
                     size="small"
-                    onChange={(e) =>
-                      setOpacity(parseFloat(e.target.value))
-                    }
+                    onChange={(e) => setOpacity(parseFloat(e.target.value))}
                     inputProps={{
                       step: 10,
                       min: 0,
                       max: 100,
-                      type: 'number',
-                      'aria-labelledby': 'input-slider',
+                      type: "number",
+                      "aria-labelledby": "input-slider",
                     }}
                   />
                 </Grid>
@@ -394,8 +391,8 @@ export const AlignmentPage = ({
                       step: 1,
                       min: -naturalWidth,
                       max: naturalWidth + Math.max(naturalWidth, naturalHeight),
-                      type: 'number',
-                      'aria-labelledby': 'input-slider',
+                      type: "number",
+                      "aria-labelledby": "input-slider",
                     }}
                   />
                 </Grid>
@@ -423,17 +420,17 @@ export const AlignmentPage = ({
                 <Grid item>
                   <Input
                     style={{ width: 80 }}
-                    value={alignments.y}
+                    value={-alignments.y}
                     size="small"
                     onChange={(e) =>
-                      handleXChange(null, parseFloat(e.target.value))
+                      handleYChange(null, -parseFloat(e.target.value))
                     }
                     inputProps={{
                       step: 1,
                       min: -naturalWidth,
                       max: naturalWidth + Math.max(naturalWidth, naturalHeight),
-                      type: 'number',
-                      'aria-labelledby': 'input-slider',
+                      type: "number",
+                      "aria-labelledby": "input-slider",
                     }}
                   />
                 </Grid>
@@ -470,21 +467,30 @@ export const AlignmentPage = ({
                       step: 0.1,
                       min: -180,
                       max: 180,
-                      type: 'number',
-                      'aria-labelledby': 'input-slider',
+                      type: "number",
+                      "aria-labelledby": "input-slider",
                     }}
                   />
                 </Grid>
               </Grid>
             </Box>
 
-            <Stack direction="row" spacing={2} style={{ width: "100%", paddingTop: 30 }}>
-              <Button component="label" variant="contained" startIcon={<ClearIcon />} color="warning"
-                onClick={e => {
+            <Stack
+              direction="row"
+              spacing={2}
+              style={{ width: "100%", paddingTop: 30 }}
+            >
+              <Button
+                component="label"
+                variant="contained"
+                startIcon={<ClearIcon />}
+                color="warning"
+                onClick={(e) => {
                   handleXChange(null, 0);
                   handleYChange(null, 0);
                   handleRotZChange(null, 0);
-                }}>
+                }}
+              >
                 Reset Alignment
               </Button>
               <div style={{ flex: "1 1 auto" }} />
@@ -517,18 +523,18 @@ export const AlignmentPage = ({
             if (!files) return;
             setCurrentImages(
               [...new Array(files.length)].map((_, i) => files[i]).map((f, i) => {
-                const alignments = importState.pasteData[i]
-                  ? {
-                    x: importState.pasteData[i]["px"] as number,
-                    y: importState.pasteData[i]["py"] as number,
-                    rotZ: importState.pasteData[i]["theta"] as number,
-                  }
-                  : { x: 0, y: 0, rotZ: 0 };
-                return {
-                  file: f,
-                  alignments: alignments,
-                };
-              })
+                  const alignments = importState.pasteData[i]
+                    ? {
+                        x: importState.pasteData[i]["px"] as number,
+                        y: importState.pasteData[i]["py"] as number,
+                        rotZ: importState.pasteData[i]["theta"] as number,
+                      }
+                    : { x: 0, y: 0, rotZ: 0 };
+                  return {
+                    file: f,
+                    alignments: alignments,
+                  };
+                })
             );
 
             setImportState((s) => ({
