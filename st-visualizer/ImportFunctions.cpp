@@ -178,7 +178,8 @@ tsv_return_type loadTsv(const string &file_name,
     // Generate cluster name array
     vector<int> clusterIndices(newClusters, 0);
     std::iota(clusterIndices.begin() + 1, clusterIndices.end(), 1);
-    vector<string> clusterNames = mapVector(clusterIndices, std::function([](const int &index){return std::to_string(index);}));
+    vector<string> clusterNames = mapVector(clusterIndices, std::function([](const int &index)
+                                                                          { return std::to_string(index); }));
     clusterNames.emplace_back("No Tissue");
 
     // Extract the relevant records
@@ -232,7 +233,7 @@ tsv_return_type loadTsv(const string &file_name,
                                                                                                                      [&](const vector<string> &row, size_t)
                                                                                                                      {
                                                                                                                          // If the data point doesn't contain tissue, give it a "none" value, otherwise use the cluster value it is a part of
-                                                                                                                         // FIXME: why do we need +1 here? 
+                                                                                                                         // FIXME: why do we need +1 here?
                                                                                                                          return getClusterArray(newClusters + 1, row[tissue_index] == "0" ? newClusters : std::stoi(row[cluster_ind]));
                                                                                                                      }));
                                                                                     }));
@@ -240,8 +241,8 @@ tsv_return_type loadTsv(const string &file_name,
     log("Parsing Values.");
     // Values are represented as arrays too, but the values are not just 1 or 0, but are all floats (except for the last index)
     vector<vector<vector<float>>> values = mapVector(sliced_records, std::function([&](const vector<vector<string>> &record, size_t)
-                                                          { return mapVector(record, std::function([&](const vector<string> &row, size_t)
-                                                                                                   {
+                                                                                   { return mapVector(record, std::function([&](const vector<string> &row, size_t)
+                                                                                                                            {
             if(row[tissue_index] == "0")
             {
                 return getClusterArray(newFeatures + 1, newFeatures);
@@ -249,7 +250,11 @@ tsv_return_type loadTsv(const string &file_name,
 
             vector<float> a = mapVector(feature_indices, std::function([&](const unsigned& index, size_t)
             {
-                return std::stof(row[index]);
+                try {
+                    return std::stof(row[index]);
+                } catch (std::exception &e) {
+                    return 0.0f; 
+                } 
             }));
             a.emplace_back(0);
             return a; })); }));

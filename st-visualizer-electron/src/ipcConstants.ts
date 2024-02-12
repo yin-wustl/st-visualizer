@@ -37,7 +37,6 @@ export const ipcHandlers = {
       ? path.resolve(process.resourcesPath)
       : path.resolve(__dirname, "../../imports/static/");
 
-    // FIXME: this only works for mac and windows at the moment
     const exePath = process.platform === "win32"
       ? path.resolve(staticsPath, "./st-visualizer.exe")
       : path.resolve(staticsPath, "./st-visualizer");
