@@ -55,7 +55,6 @@ contourTriMultiDCStruct contourTriMultiDC(const Eigen::Matrix2Xf &pointIndexToPo
     vector<vector<int>> edgeIndexToFaceIndices;
     edgeIndexToFaceIndices.reserve(triangle_edges.size());
 
-    // TODO: This is the longest process
     // Make connections between edges/faces, edges/endpoints, and endpoints/edges
     for (int triangleSide = 0; triangleSide < 3; triangleSide++)
     {

@@ -11,13 +11,13 @@
 
 using namespace nlohmann;
 
-using std::string;
-using std::vector;
+using std::cerr;
 using std::cout;
 using std::endl;
 using std::ifstream;
+using std::string;
 using std::stringstream;
-using std::cerr;
+using std::vector;
 
 // Mode 0: ./st-visualizer 0 <config.json file path>
 // Mode 1: ./st-visualizer 1 <config.json file content>
@@ -27,11 +27,14 @@ int main(int argc, char *argv[])
     if (strcmp(argv[1], "0") == 0)
     {
         ifstream file(argv[2]);
-        if (file.is_open()) {
+        if (file.is_open())
+        {
             string content((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
             file.close();
             config = json::parse(content);
-        } else {
+        }
+        else
+        {
             cerr << "Error opening the file" << endl;
             return -1;
         }
@@ -62,10 +65,8 @@ int main(int argc, char *argv[])
     {
         featureCols.push_back(name.get<unsigned>());
     }
-    std::cout << alignmentFile << std::endl;
 
-    const auto alignmentValues = importAlignments(
-        alignmentFile);
+    const vector<pair<vector<coord>, vector<coord>>> alignmentValues = importAlignments(alignmentFile);
 
     const tsv_return_type results = loadTsv(
         config.at("fileName").get<std::string>(),
@@ -200,27 +201,27 @@ int main(int argc, char *argv[])
     ret["slices"] = slices;                   // slices,
     ret["sliceNames"] = sliceNames;           // sliceNames
     ret["values"] = results.values;
-    ret["featureNames"] = results.names;         // featureNames,
-    ret["featureCols"] = featureCols;            // featureCols,
-    ret["ptValIndex"] = ptValIndex;              // ptValIndex,
-    ret["ctrs2Dvals"] = convertCtrs(ctrs2dVals); // ctrs2Dvals,
-    ret["tris2Dvals"] = convertTris(tris2dVals); // tris2Dvals
-    ret["ctrs3Dvals"] = convert3D(ctrs3dVals);   // ctrs3Dvals,
-//    countAllComponents(ctrs3dVals);
-//    ret["ctrsSurfaceAreaVals"] = getSurfaceAreas(ctrs3dVals);
-//    ret["ctrsVolumeVals"] = getVolumes(ctrs3dVals);
+    ret["featureNames"] = results.names;                 // featureNames,
+    ret["featureCols"] = featureCols;                    // featureCols,
+    ret["ptValIndex"] = ptValIndex;                      // ptValIndex,
+    ret["ctrs2Dvals"] = convertCtrs(ctrs2dVals);         // ctrs2Dvals,
+    ret["tris2Dvals"] = convertTris(tris2dVals);         // tris2Dvals
+    ret["ctrs3Dvals"] = convert3D(ctrs3dVals);           // ctrs3Dvals,
+                                                         //    countAllComponents(ctrs3dVals);
+                                                         //    ret["ctrsSurfaceAreaVals"] = getSurfaceAreas(ctrs3dVals);
+                                                         //    ret["ctrsVolumeVals"] = getVolumes(ctrs3dVals);
     ret["ptClusIndex"] = ptClusIndex;                    // ptClusIndex,
     ret["nClusters"] = results.clusters[0][0].size();    // nClusters,
     ret["ctrs2Dclusters"] = convertCtrs(ctrs2dclusters); // ctrs2Dclusters,
     ret["tris2Dclusters"] = convertTris(tris2dclusters); // tris2Dclusters,
     ret["ctrs3Dclusters"] = convert3D(ctrs3dClusters);   // ctrs3Dclusters,
-//    ret["ctrsVolumeClusters"] = getVolumes(ctrs3dClusters);
+                                                         //    ret["ctrsVolumeClusters"] = getVolumes(ctrs3dClusters);
 
     if (config.at("objExport").get<bool>())
     {
         log("Exporting obj files.");
-        exportObj("./bin/features/", ctrs3dVals, results.names);
-        exportObj("./bin/clusters/", ctrs3dClusters, results.clusterNames);
+        exportObj(config.at("featureObj").get<string>(), ctrs3dVals, results.names);
+        exportObj(config.at("clusterObj").get<string>(), ctrs3dClusters, results.clusterNames);
     }
 
     ret["ctrsSurfaceAreaVals"] = computeSurfaceArea(ctrs3dVals);
@@ -238,10 +239,10 @@ int main(int argc, char *argv[])
 
     auto something = ret["ctrsSurfaceAreaVals"];
     cout << something << endl;
-//    cout << ret["componentsVals"] << endl;
-//    cout << ret["handlesVals"] << endl;
-//    cout << ret["componentsClusters"] << endl;
-//    cout << ret["handlesClusters"] << endl;
+    //    cout << ret["componentsVals"] << endl;
+    //    cout << ret["handlesVals"] << endl;
+    //    cout << ret["componentsClusters"] << endl;
+    //    cout << ret["handlesClusters"] << endl;
 
     log("Calculations complete.");
 

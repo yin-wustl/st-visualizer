@@ -1,6 +1,7 @@
 {
     "files.associations": {
-        "ostream": "cpp"
+        "ostream": "cpp",
+        "vector": "cpp"
     },
     "typescript.enablePromptUseWorkspaceTsdk": true,
     "typescript.tsdk": "st-visualizer-electron/node_modules/typescript/lib"

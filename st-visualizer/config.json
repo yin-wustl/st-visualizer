@@ -1,7 +1,7 @@
 {
   "fileName": "/Users/yin/Code/masters-project/st-visualizer-data/batch-2/HT112C1_H1/3d_visualizer_input.tsv",
-  "alignmentFile": "/Users/yin/Code/masters-project/st-visualizer/st-visualizer-electron/.webpack/main/alignments.csv",
-  "target": "/Users/yin/Code/masters-project/st-visualizer/st-visualizer-electron/.webpack/main/output.json",
+  "alignmentFile": "/Users/yin/Code/masters-project/st-visualizer-data/batch-2/HT112C1_H1/alignments.csv",
+  "target": "/Users/yin/Code/masters-project/st-visualizer-data/batch-2/HT112C1_H1/output.json",
   "shrink": 0,
   "sliceNames": [
     "HT112C1-U1_ST_Bn1",
@@ -32,8 +32,8 @@
   "colIndex": 7,
   "clusterIndex": 8,
   "zDistance": 100,
-  "resultExport": false,
-  "objExport": false,
-  "featureObj": null,
-  "clusterObj": null
+  "resultExport": true,
+  "objExport": true,
+  "featureObj": "/Users/yin/Code/masters-project/st-visualizer-data/batch-2/HT112C1_H1/features/",
+  "clusterObj": "/Users/yin/Code/masters-project/st-visualizer-data/batch-2/HT112C1_H1/clusters/"
 }

@@ -96,7 +96,7 @@ vector<pair<vector<coord>, vector<coord>>> importAlignments(const string &alignm
     }
 
     // Transform cells into float
-    const auto transformCells = mapVector(csvCells, std::function(convertRowToFloat));
+    const vector<vector<float>> transformCells = mapVector(csvCells, std::function(convertRowToFloat));
 
     // Now we have n columns and m*4 rows of ints
     // This part transforms that into an m by 2 by n structure of coords
@@ -202,7 +202,7 @@ tsv_return_type loadTsv(const string &file_name,
     vector<Eigen::Matrix2Xf> slices = mapVector(sliced_records, std::function(
                                                                     [&xy_indices, &source_targets](const vector<vector<string>> &record, size_t i)
                                                                     {
-                                                                        const auto raw_slice_coordinates_vector = mapVector(
+                                                                        const vector<coord> raw_slice_coordinates_vector = mapVector(
                                                                             record, std::function(
                                                                                         [&xy_indices](const vector<string> &row, size_t)
                                                                                         {
@@ -264,19 +264,19 @@ tsv_return_type loadTsv(const string &file_name,
     vector<Eigen::Matrix2Xf> new_slice_data = mapVector(slices, std::function([&](const Eigen::Matrix2Xf &, size_t i)
                                                                               {
         log("  ", i + 1, "/", slices.size(), " slices");
-        //If it's the first slice
+        // If it's the first slice
         if(i == 0)
         {
             return growAndCover(slices[i], slices[i + 1], wid_buffer, num_ransac);
         }
 
-        //If it's the last slice
-        if(i == slices.size() - 1)
+        // If it's the last slice
+        else if(i == slices.size() - 1)
         {
             return growAndCover(slices[i], slices[i - 1], wid_buffer, num_ransac);
         }
 
-        //All other slices
+        // All other slices, first combine points from the previous and next slices together
         Eigen::Matrix2Xf top_and_bottom_slice(2, slices[i + 1].cols() + slices[i - 1].cols());
         top_and_bottom_slice << slices[i + 1], slices[i - 1];
         return growAndCover(slices[i], top_and_bottom_slice, wid_buffer, num_ransac); }));
@@ -386,8 +386,8 @@ Eigen::Matrix2f getSVDRotation(colCoordMat source_matrix, colCoordMat target_mat
     // Row 0 is x, row 1 is y
 
     //(* getting the centroid *)
-    const colCoordMat zeroSource = translateToZeroCentroid(std::move(source_matrix));
-    colCoordMat zeroTarget = translateToZeroCentroid(std::move(target_matrix));
+    const colCoordMat zeroSource = translateToZeroCentroid(source_matrix);
+    colCoordMat zeroTarget = translateToZeroCentroid(target_matrix);
 
     const Eigen::Matrix2f mat = zeroSource * zeroTarget.transpose();
 
