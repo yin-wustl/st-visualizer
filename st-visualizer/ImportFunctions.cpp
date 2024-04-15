@@ -197,7 +197,7 @@ tsv_return_type loadTsv(const string &file_name,
 
     // This is the point where parallel vectors are created
 
-    // Pull out the corresponding xy data from the records, adjusted to be a unified coordinate system
+    // apply the transformation on all points except those from the first slice
     pair<unsigned int, unsigned int> xy_indices(row_col_indices.second, row_col_indices.first);
     vector<Eigen::Matrix2Xf> slices = mapVector(sliced_records, std::function(
                                                                     [&xy_indices, &source_targets](const vector<vector<string>> &record, size_t i)
@@ -356,7 +356,6 @@ tsv_return_type loadTsv(const string &file_name,
         grown_values.insert(grown_values.begin(), bottom);
     }
 
-    // TODO: std::move for speed reasons
     tsv_return_type ret;
     ret.names = names;
     ret.clusterNames = clusterNames;

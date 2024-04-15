@@ -32,8 +32,8 @@
   "colIndex": 7,
   "clusterIndex": 8,
   "zDistance": 100,
-  "resultExport": true,
-  "objExport": true,
+  "resultExport": false,
+  "objExport": false,
   "featureObj": "/Users/yin/Code/masters-project/st-visualizer-data/batch-2/HT112C1_H1/features/",
   "clusterObj": "/Users/yin/Code/masters-project/st-visualizer-data/batch-2/HT112C1_H1/clusters/"
 }

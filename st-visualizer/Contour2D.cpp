@@ -19,6 +19,7 @@ int orientation(const Eigen::Vector2f &a, const Eigen::Vector2f &b)
     return result == 0.0f ? 0 : (result < 0.0f ? -1 : 1);
 }
 
+// get the dominant material at a point
 int getMaxPos(const vector<float> &material_values)
 {
     int max_index = 0;

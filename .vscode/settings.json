@@ -1,7 +1,11 @@
 {
     "files.associations": {
         "ostream": "cpp",
-        "vector": "cpp"
+        "vector": "cpp",
+        "__split_buffer": "cpp",
+        "deque": "cpp",
+        "list": "cpp",
+        "string": "cpp"
     },
     "typescript.enablePromptUseWorkspaceTsdk": true,
     "typescript.tsdk": "st-visualizer-electron/node_modules/typescript/lib"

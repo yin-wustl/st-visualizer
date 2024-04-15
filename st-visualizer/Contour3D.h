@@ -473,7 +473,7 @@ inline tuple<vector<Eigen::Vector3f>, vector<vector<int>>, vector<pair<int, int>
                 // Stores the vertices in order that make up the new segment
                 vector<int> new_segment_vertices_set_ordered = subset(vertex_index_by_tet_index, tets_touching_edge_set);
 
-                // FIXME: it never reach this part
+                // Just in case cover and grow failed
                 if (!endpoints.empty())
                 {
                     // if there are boundary faces
@@ -528,14 +528,7 @@ inline tuple<vector<Eigen::Vector3f>, vector<vector<int>>, vector<pair<int, int>
                     std::ranges::reverse(new_segment_vertices_set_ordered);
                 }
 
-                // This doesn't work
-//                for (int i = 1; i < new_segment_vertices_set_ordered.size() - 1; i++)
-//                {
-//                    segments_by_index.push_back({new_segment_vertices_set_ordered[0], new_segment_vertices_set_ordered[i], new_segment_vertices_set_ordered[i + 1]});
-//                }
-
                 segments_by_index.push_back(new_segment_vertices_set_ordered);
-
             }
 
             if (edgeIndex % print_constant == 0)

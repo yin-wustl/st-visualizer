@@ -137,30 +137,18 @@ int main(int argc, char *argv[])
         for (auto &tris : tris2dVals)
         {
             json a = json::array();
+            
+            json b = json::array();
+            for (auto &elem : std::get<0>(tris))
             {
-                json b = json::array();
-                for (auto &elem : std::get<0>(tris))
-                {
-                    b.push_back(std::vector(elem.data(), elem.data() + elem.rows()));
-                }
-                a.push_back(b);
+                b.push_back(std::vector(elem.data(), elem.data() + elem.rows()));
             }
+            a.push_back(b);
 
             auto &triangles = std::get<1>(tris);
-            for (auto &tri : triangles)
-            {
-                for (auto &ind : tri)
-                {
-                    // ind++;
-                }
-            }
             a.push_back(triangles);
 
             auto &materials = std::get<2>(tris);
-            for (auto &mat : materials)
-            {
-                // mat++;
-            }
             a.push_back(materials);
 
             tris2dValsJson.push_back(a);
@@ -207,9 +195,6 @@ int main(int argc, char *argv[])
     ret["ctrs2Dvals"] = convertCtrs(ctrs2dVals);         // ctrs2Dvals,
     ret["tris2Dvals"] = convertTris(tris2dVals);         // tris2Dvals
     ret["ctrs3Dvals"] = convert3D(ctrs3dVals);           // ctrs3Dvals,
-                                                         //    countAllComponents(ctrs3dVals);
-                                                         //    ret["ctrsSurfaceAreaVals"] = getSurfaceAreas(ctrs3dVals);
-                                                         //    ret["ctrsVolumeVals"] = getVolumes(ctrs3dVals);
     ret["ptClusIndex"] = ptClusIndex;                    // ptClusIndex,
     ret["nClusters"] = results.clusters[0][0].size();    // nClusters,
     ret["ctrs2Dclusters"] = convertCtrs(ctrs2dclusters); // ctrs2Dclusters,
@@ -236,13 +221,6 @@ int main(int argc, char *argv[])
     ret["componentsClusters"] = componentsClusters;
     ret["handlesVals"] = handlesVals;
     ret["handlesClusters"] = handlesClusters;
-
-    auto something = ret["ctrsSurfaceAreaVals"];
-    cout << something << endl;
-    //    cout << ret["componentsVals"] << endl;
-    //    cout << ret["handlesVals"] << endl;
-    //    cout << ret["componentsClusters"] << endl;
-    //    cout << ret["handlesClusters"] << endl;
 
     log("Calculations complete.");
 
