@@ -142,12 +142,11 @@ export const ImportPage = ({
             if (!file) return;
             const tsvPath = file.path;
             const rawText = await file.text();
-            const tsvData = rawText.split("\n").map((l) => l.split("\t"));
+            const tsvData = rawText.split("\n").filter((l) => l.length > 1).map((l) => l.split("\t"));
             const slicesRow = tsvData.map(
               (row) => row[importState[colTypes.slice]]
             );
             const numSlices = _.compact(_.uniq(slicesRow.slice(1))).length;
-            // console.log(tsvData);
             setImportState((s) => ({
               ...s,
               numSlices: numSlices,
@@ -156,7 +155,6 @@ export const ImportPage = ({
               [colTypes.feature]: [...new Array(tsvData[0].length - 6)].map(
                 (_, i) => i + 6
               ),
-              pasteFiles: [...new Array<string>(numSlices - 1)],
             }));
           }}
         />

@@ -1,7 +1,7 @@
 {
-  "fileName": "/Users/yin/Code/masters-project/st-visualizer-data/noise/noise.tsv",
-  "alignmentFile": "/Users/yin/Code/masters-project/st-visualizer-data/noise/alignments.csv",
-  "target": "/Users/yin/Code/masters-project/st-visualizer-data/noise/output.json",
+  "fileName": "/Users/yin/Code/masters-project/st-visualizer-data/noise/example/noise.tsv",
+  "alignmentFile": "/Users/yin/Code/masters-project/st-visualizer-data/noise/example/alignments.csv",
+  "target": "/Users/yin/Code/masters-project/st-visualizer-data/noise/example/output.json",
   "shrink": 0,
   "sliceNames": [
     "slice_0",
@@ -29,6 +29,6 @@
   "zDistance": 50,
   "resultExport": false,
   "objExport": false,
-  "featureObj": "/Users/yin/Code/masters-project/st-visualizer-data/noise/features/",
-  "clusterObj": "/Users/yin/Code/masters-project/st-visualizer-data/noise/clusters/"
+  "featureObj": "/Users/yin/Code/masters-project/st-visualizer-data/noise/example/features/",
+  "clusterObj": "/Users/yin/Code/masters-project/st-visualizer-data/noise/example/clusters/"
 }

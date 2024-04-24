@@ -428,6 +428,10 @@ inline int exportObj(string path, vector<pair<vector<Eigen::Vector3f>, vector<ve
 
     for (int i = 0; i < nums; i++)
     {
+        if (!std::filesystem::exists(path))
+        {
+            std::filesystem::create_directories(path);
+        }
         std::ofstream target(path + names.at(i) + ".obj", std::ofstream::trunc);
 
         // export the points

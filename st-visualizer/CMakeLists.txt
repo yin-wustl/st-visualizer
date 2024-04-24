@@ -27,4 +27,5 @@ add_executable(st-visualizer
         main.cpp
         Stats.h
         UtilityFunctions.cpp
-        UtilityFunctions.h)
+        UtilityFunctions.h
+        Timing.h)

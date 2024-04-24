@@ -3,6 +3,7 @@
 #include "Contour3D.h"
 #include "ImportFunctions.h"
 #include "UtilityFunctions.h"
+#include "Timing.h"
 
 #include <algorithm>
 #include <queue>
@@ -17,6 +18,8 @@ using std::queue;
 using std::set;
 using std::unordered_set;
 using std::vector;
+
+unsigned long contour_tetgen;
 
 Eigen::Vector3f cross(const Eigen::Vector3f &A, const Eigen::Vector3f &B, const Eigen::Vector3f &C)
 {
@@ -284,8 +287,11 @@ vector<pair<vector<Eigen::Vector3f>, vector<vector<int>>>>
 getVolumeContours(const Eigen::Matrix3Xf &pts, vector<vector<float>> vals, float shrink)
 {
 	const size_t nmat = vals[0].size();
+    std::chrono::steady_clock::time_point start_contour_tetgen = std::chrono::high_resolution_clock::now();
 	tetgenio reg;
 	tetralizeMatrix(pts, reg);
+    std::chrono::steady_clock::time_point end_contour_tetgen = std::chrono::high_resolution_clock::now();
+    contour_tetgen = duration_cast<std::chrono::microseconds>(end_contour_tetgen - start_contour_tetgen).count();
 	const vector<vector<int>> tets = tetgenToTetVector(reg);
 	vector<Eigen::Vector3f> pts_vector;
 	pts_vector.reserve(pts.cols());

@@ -20,6 +20,7 @@ using std::function;
 
 struct tsv_return_type
 {
+    int num_points;
 	vector<string> names;
     vector<string> clusterNames;
 	vector<Eigen::Matrix3Xf> slices;

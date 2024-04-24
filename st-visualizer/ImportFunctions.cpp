@@ -2,6 +2,7 @@
 #include "ImportFunctions.h"
 #include "GrowAndCover.h"
 #include "UtilityFunctions.h"
+#include "Timing.h"
 
 #include <fstream>
 #include <functional>
@@ -9,10 +10,15 @@
 #include <limits>
 #include <stdexcept>
 #include <utility>
+#include <chrono>
 
 using std::pair;
 using std::string;
 using std::vector;
+
+unsigned long import_io;
+unsigned long preprocessing;
+unsigned long cover_and_grow;
 
 constexpr int wid_buffer = 2;
 constexpr int num_ransac = 20;
@@ -128,6 +134,8 @@ tsv_return_type loadTsv(const string &file_name,
                         unsigned int z_distance,
                         vector<pair<vector<coord>, vector<coord>>> source_targets)
 {
+    std::chrono::steady_clock::time_point start_import_io = std::chrono::high_resolution_clock::now();
+
     // Import raw file data
     std::ifstream aFile(file_name);
     log("Loading TSV.");
@@ -146,6 +154,10 @@ tsv_return_type loadTsv(const string &file_name,
         throw "TSV FILE NOT FOUND";
     }
 
+    std::chrono::steady_clock::time_point end_import_io = std::chrono::high_resolution_clock::now();
+    import_io = duration_cast<std::chrono::microseconds>(end_import_io - start_import_io).count();
+
+    std::chrono::steady_clock::time_point start_preprocessing = std::chrono::high_resolution_clock::now();
     log("Loading names.");
     vector<string> names = mapVector(feature_indices, std::function([&rawData](const unsigned &index, size_t)
                                                                     { return rawData.front()[index]; }));
@@ -259,6 +271,10 @@ tsv_return_type loadTsv(const string &file_name,
             a.emplace_back(0);
             return a; })); }));
 
+    std::chrono::steady_clock::time_point end_preprocessing = std::chrono::high_resolution_clock::now();
+    preprocessing = duration_cast<std::chrono::microseconds>(end_preprocessing - start_preprocessing).count();
+
+    std::chrono::steady_clock::time_point start_cover_and_grow = std::chrono::high_resolution_clock::now();
     log("Growing Slices.");
     // Add buffer to each slice and grow and cover neighboring slices
     vector<Eigen::Matrix2Xf> new_slice_data = mapVector(slices, std::function([&](const Eigen::Matrix2Xf &, size_t i)
@@ -356,7 +372,11 @@ tsv_return_type loadTsv(const string &file_name,
         grown_values.insert(grown_values.begin(), bottom);
     }
 
+    std::chrono::steady_clock::time_point end_cover_and_grow = std::chrono::high_resolution_clock::now();
+    cover_and_grow = duration_cast<std::chrono::microseconds>(end_cover_and_grow - start_cover_and_grow).count();
+
     tsv_return_type ret;
+    ret.num_points = rawData.size();
     ret.names = names;
     ret.clusterNames = clusterNames;
     ret.slices = slices3d;

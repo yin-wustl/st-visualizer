@@ -4,6 +4,7 @@
 #include "JSONParser.h"
 #include "Stats.h"
 #include "UtilityFunctions.h"
+#include "Timing.h"
 
 #include <fstream>
 #include <iostream>
@@ -18,6 +19,11 @@ using std::ifstream;
 using std::string;
 using std::stringstream;
 using std::vector;
+
+unsigned long contour_2d;
+unsigned long contour_3d;
+unsigned long stats;
+unsigned long export_io;
 
 // Mode 0: ./st-visualizer 0 <config.json file path>
 // Mode 1: ./st-visualizer 1 <config.json file content>
@@ -79,8 +85,13 @@ int main(int argc, char *argv[])
         config.at("zDistance").get<int>(),
         alignmentValues);
 
+    std::chrono::steady_clock::time_point start_contour_2d = std::chrono::high_resolution_clock::now();
     auto [ctrs2dVals, tris2dVals] = getSectionContoursAll(results.slices, results.values, shrink);
     auto [ctrs2dclusters, tris2dclusters] = getSectionContoursAll(results.slices, results.clusters, shrink);
+    std::chrono::steady_clock::time_point end_contour_2d = std::chrono::high_resolution_clock::now();
+    contour_2d = duration_cast<std::chrono::microseconds>(end_contour_2d - start_contour_2d).count();
+
+    std::chrono::steady_clock::time_point start_contour_3d = std::chrono::high_resolution_clock::now();
     auto allpts = concatMatrixes(results.slices);
     auto ctrs3dVals = getVolumeContours(allpts, flatten<std::vector<float>>(results.values), shrink);
     auto ctrs3dClusters = getVolumeContours(allpts, flatten<std::vector<float>>(results.clusters), shrink);
@@ -181,7 +192,20 @@ int main(int argc, char *argv[])
 
         return ctrs3dJson;
     };
+    std::chrono::steady_clock::time_point end_contour_3d = std::chrono::high_resolution_clock::now();
+    contour_3d = duration_cast<std::chrono::microseconds>(end_contour_3d - start_contour_3d).count();
 
+    std::chrono::steady_clock::time_point start_stats = std::chrono::high_resolution_clock::now();
+    vector<float> surface_area_features = computeSurfaceArea(ctrs3dVals);
+    vector<float> surface_area_clusters = computeSurfaceArea(ctrs3dClusters);
+    vector<float> volume_features = computeVolume(ctrs3dVals);
+    vector<float> volume_clusters = computeVolume(ctrs3dClusters);
+    auto [componentsVals, handlesVals] = connectedComponent(ctrs3dVals);
+    auto [componentsClusters, handlesClusters] = connectedComponent(ctrs3dClusters);
+    std::chrono::steady_clock::time_point end_stats = std::chrono::high_resolution_clock::now();
+    stats = duration_cast<std::chrono::microseconds>(end_stats - start_stats).count();
+
+    std::chrono::steady_clock::time_point start_export_io = std::chrono::high_resolution_clock::now();
     json ret = json::object();
     ret["nat"] = results.values[0][0].size(); // nMat,
     ret["shrink"] = shrink;                   // shrink,
@@ -209,14 +233,10 @@ int main(int argc, char *argv[])
         exportObj(config.at("clusterObj").get<string>(), ctrs3dClusters, results.clusterNames);
     }
 
-    ret["ctrsSurfaceAreaVals"] = computeSurfaceArea(ctrs3dVals);
-    ret["ctrsSurfaceAreaClusters"] = computeSurfaceArea(ctrs3dClusters);
-    ret["ctrsVolumeVals"] = computeVolume(ctrs3dVals);
-    ret["ctrsVolumeClusters"] = computeVolume(ctrs3dClusters);
-
-    cout << "Computing connected components" << endl;
-    auto [componentsVals, handlesVals] = connectedComponent(ctrs3dVals);
-    auto [componentsClusters, handlesClusters] = connectedComponent(ctrs3dClusters);
+    ret["ctrsSurfaceAreaVals"] = surface_area_features;
+    ret["ctrsSurfaceAreaClusters"] = surface_area_clusters;
+    ret["ctrsVolumeVals"] = volume_features;
+    ret["ctrsVolumeClusters"] = volume_clusters;
     ret["componentsVals"] = componentsVals;
     ret["componentsClusters"] = componentsClusters;
     ret["handlesVals"] = handlesVals;
@@ -230,6 +250,10 @@ int main(int argc, char *argv[])
         std::ofstream f(target);
         f << ret;
     }
+    std::chrono::steady_clock::time_point end_export_io = std::chrono::high_resolution_clock::now();
+    export_io = duration_cast<std::chrono::microseconds>(end_export_io - start_export_io).count();
+
+    export_timing(results.num_points);
 
     log("Exiting.");
     return 0;
