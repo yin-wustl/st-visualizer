@@ -2,6 +2,7 @@
 
 #include "Contour2D.h"
 #include "UtilityFunctions.h"
+#include "Timing.h"
 
 #include <Eigen/Eigen>
 #include <ranges>

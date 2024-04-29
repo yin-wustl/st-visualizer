@@ -4,10 +4,13 @@
 
 #include <map>
 #include <vector>
+#include <chrono>
 
 using std::pair;
 using std::tuple;
 using std::vector;
+
+
 
 // orientation (not sure if this should be i or f)
 // Returns 1 if left, 0 if none, -1 if right (right hand rule)
@@ -161,7 +164,7 @@ getContourAllMats2D(const vector<Eigen::Vector2f> &verts, const vector<pair<int,
     return ret;
 }
 
-inline pair<
+pair<
         vector<
                 pair<
                         vector<Eigen::Vector3f>,
@@ -171,82 +174,10 @@ inline pair<
                 vector<vector<int>>,
                 vector<int>
         >>
-getSectionContours(const Eigen::Matrix3Xf &pts, const vector<vector<float>> &vals, float shrink)
-{
-    int nmat = vals[0].size();
-    float z = pts.col(0)(2);
-    Eigen::Matrix2Xf npts(2, pts.cols());
-    for (int i = 0; i < pts.cols(); i++)
-    {
-        npts.col(i) = Eigen::Vector2f({pts.col(i)(0), pts.col(i)(1)});
-    }
+getSectionContours(const Eigen::Matrix3Xf &pts, const vector<vector<float>> &vals, float shrink);
 
-    auto reg = triangulateMatrix(npts);
-    vector<vector<int>> tris;
-    {
-        tris.reserve(reg.numberoftriangles);
-        for (int i = 0; i < reg.numberoftriangles; i++)
-        {
-            tris.push_back(getTriangleCornerIndices(reg, i));
-        }
-    }
-
-    auto res = contourTriMultiDC(npts, tris, vals);
-    auto ctrs = getContourAllMats2D(res.verts, res.segs, res.segMats, nmat, shrink);
-
-    vector<pair<vector<Eigen::Matrix<float, 3, 1, 0>>, vector<pair<int, int>>>> ctrNewPtsAndSegs;
-    ctrNewPtsAndSegs.reserve(ctrs.size());
-    for (auto &ctr: ctrs)
-    {
-        const auto &newVertices = ctr.first;
-        const auto &newSegments = ctr.second;
-        vector<Eigen::Vector3f> dimIncreased;
-        dimIncreased.reserve(newVertices.size());
-        for (auto &vert: newVertices)
-        {
-            dimIncreased.push_back(Eigen::Vector3f({vert(0), vert(1), z}));
-        }
-
-        ctrNewPtsAndSegs.emplace_back(
-                dimIncreased,
-                newSegments);
-    }
-
-    const auto &ftris = res.fillTris;
-    const auto &fmats = res.fillMats;
-
-    vector<Eigen::Vector3f> fverts;
-    {
-        fverts.reserve(res.fillVerts.size());
-        for (auto &vert: res.fillVerts)
-        {
-            fverts.push_back(Eigen::Vector3f({vert(0), vert(1), z}));
-        }
-    }
-    return {ctrNewPtsAndSegs, {fverts, ftris, fmats}};
-}
-
-inline pair<vector<vector<pair<vector<Eigen::Vector3f>, vector<pair<int, int>>>>>,
+pair<vector<vector<pair<vector<Eigen::Vector3f>, vector<pair<int, int>>>>>,
         vector<tuple<vector<Eigen::Vector3f>, vector<vector<int>>, vector<int>>>>
 getSectionContoursAll(vector<Eigen::Matrix3Xf> sections,
                       vector<vector<vector<float>>> vals,
-                      float shrink)
-{
-    vector<vector<pair<vector<Eigen::Vector3f>, vector<pair<int, int>>>>> newPointsAndSegs;
-    newPointsAndSegs.reserve(sections.size());
-
-    vector<tuple<vector<Eigen::Vector3f>, vector<vector<int>>, vector<int>>> triangleInfo;
-    triangleInfo.reserve(sections.size());
-
-    log("Contouring Slices.");
-    for (int i = 0; i < sections.size(); i++)
-    {
-        const auto &pts = sections[i];
-        const auto &v = vals[i];
-        log("  ", i + 1, "/", sections.size(), " slices");
-        auto contour = getSectionContours(pts, v, shrink);
-        newPointsAndSegs.push_back(std::move(contour.first));
-        triangleInfo.push_back(std::move(contour.second));
-    }
-    return {newPointsAndSegs, triangleInfo};
-}
+                      float shrink);

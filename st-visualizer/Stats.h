@@ -19,7 +19,7 @@ using std::set;
 using std::unordered_set;
 using std::vector;
 
-unsigned long contour_tetgen;
+vector<unsigned long> contour_tetgen;
 
 Eigen::Vector3f cross(const Eigen::Vector3f &A, const Eigen::Vector3f &B, const Eigen::Vector3f &C)
 {
@@ -291,7 +291,7 @@ getVolumeContours(const Eigen::Matrix3Xf &pts, vector<vector<float>> vals, float
 	tetgenio reg;
 	tetralizeMatrix(pts, reg);
     std::chrono::steady_clock::time_point end_contour_tetgen = std::chrono::high_resolution_clock::now();
-    contour_tetgen = duration_cast<std::chrono::microseconds>(end_contour_tetgen - start_contour_tetgen).count();
+    contour_tetgen.push_back(duration_cast<std::chrono::microseconds>(end_contour_tetgen - start_contour_tetgen).count());
 	const vector<vector<int>> tets = tetgenToTetVector(reg);
 	vector<Eigen::Vector3f> pts_vector;
 	pts_vector.reserve(pts.cols());
