@@ -3,8 +3,8 @@ import math
 from config_gen import config_gen
 from data_gen import data_gen
 
-start = 5
-end = 1000
+start = 2000
+end = 5000
 step = 5
 
 repeat = 5

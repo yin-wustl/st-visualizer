@@ -4,6 +4,7 @@
 #include "ImportFunctions.h"
 #include "UtilityFunctions.h"
 #include "Timing.h"
+#include "PHExport.h"
 
 #include <algorithm>
 #include <queue>
@@ -301,6 +302,8 @@ getVolumeContours(const Eigen::Matrix3Xf &pts, vector<vector<float>> vals, float
 		pts_vector.emplace_back(pt);
 	}
 	auto [verts, segs, segmats] = contourTetMultiDC(pts_vector, tets, vals);
+
+    PHExport(pts_vector, vals, tets);
 
 	vector<vector<int>> new_segs;
 	vector<pair<int, int>> new_segmats;

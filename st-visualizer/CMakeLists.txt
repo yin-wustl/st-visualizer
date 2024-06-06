@@ -28,4 +28,5 @@ add_executable(st-visualizer
         Stats.h
         UtilityFunctions.cpp
         UtilityFunctions.h
-        Timing.h)
+        Timing.h
+        PHExport.h)
