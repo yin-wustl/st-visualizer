@@ -171,6 +171,7 @@ tsv_return_type loadTsv(const string &file_name,
     for (const auto &row : tab)
     {
         {
+            // FIXME: replace the try catch
             try
             {
                 int n = std::stoi(row[cluster_ind]);

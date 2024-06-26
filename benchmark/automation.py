@@ -37,6 +37,4 @@ for size in range(start, end + 1, step):
     )
     config_gen(str(num_points), this_data_path, alignment_path)
     for _ in range(repeat):
-        command = f"{exec_path} 0 {this_data_path}config_{num_points}.json"
-        print(command)
         os.system(f"{exec_path} 0 {this_data_path}config_{num_points}.json")
