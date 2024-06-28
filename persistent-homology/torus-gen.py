@@ -20,7 +20,7 @@ v_2 = np.array([point_distance * np.cos(np.pi / 3), point_distance * np.sin(np.p
 slice_distance = [i * (r / (num_slices_one_side + 1)) for i in range(-num_slices_one_side, num_slices_one_side + 1)]
 
 # width of intersection of torus on each slice
-widths = [2 * np.sqrt(r**2 - d**2) for d in slice_distance]
+widths = [np.sqrt(r**2 - d**2) for d in slice_distance]
 
 headers = ["slice_id", "is_tissue", "cluster", "row", "column", "feature", "feature_void"]
 output = pd.DataFrame(columns=headers)
@@ -48,7 +48,7 @@ for i in range(num_slices):
             distance = math.sqrt(x**2 + y**2)
             is_tissue = 1
             if R - widths[i] <= distance <= R + widths[i]:
-                features = [math.fabs(r - math.sqrt((distance - R) ** 2 + slice_distance[i] ** 2)) / r, 0]
+                features = [(r - math.sqrt((distance - R) ** 2 + slice_distance[i] ** 2)) / r, 0]
             else:
                 features = [0, 1]
             cluster = 0
