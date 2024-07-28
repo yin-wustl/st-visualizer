@@ -11,13 +11,22 @@ using std::vector;
 using std::string;
 using std::stringstream;
 
+extern bool ph_toggle;
+extern string ph_points_path;
+extern string ph_tets_path;
+
 #ifndef ST_VISUALIZER_PHEXPORT_H
 #define ST_VISUALIZER_PHEXPORT_H
 
 inline void PHExport(const vector<Eigen::Vector3f> &points, const vector<vector<float>> &materials, const vector<vector<int>> &tets)
 {
-    std::ofstream file_points("points.csv", std::ios_base::app);
-    std::ofstream file_tets("tets.csv", std::ios_base::app);
+    if (!ph_toggle)
+    {
+        return;
+    }
+
+    std::ofstream file_points(ph_points_path, std::ios_base::app);
+    std::ofstream file_tets(ph_tets_path, std::ios_base::app);
     if (file_points.is_open() && file_tets.is_open())
     {
         for (int i = 0; i < points.size(); i++)

@@ -7,11 +7,13 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
+#include <string>
 
 #ifndef ST_VISUALIZER_TIMING_H
 #define ST_VISUALIZER_TIMING_H
 
 using std::vector;
+using std::string;
 
 extern unsigned long import_io;
 extern unsigned long preprocessing;
@@ -23,8 +25,9 @@ extern unsigned long export_io;
 extern vector<unsigned long> contour_tetgen;
 extern vector<unsigned long> contour_triangle;
 
-inline void export_timing(int num_points) {
-    std::ofstream file("timing.csv", std::ios_base::app);
+inline void export_timing(int num_points, string path)
+{
+    std::ofstream file(path, std::ios_base::app);
     if (file.is_open())
     {
         file << num_points << ",";

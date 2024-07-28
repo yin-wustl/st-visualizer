@@ -5,6 +5,7 @@
 #include "Stats.h"
 #include "UtilityFunctions.h"
 #include "Timing.h"
+#include "PHExport.h"
 
 #include <fstream>
 #include <iostream>
@@ -24,6 +25,10 @@ unsigned long contour_2d;
 unsigned long contour_3d;
 unsigned long stats;
 unsigned long export_io;
+
+bool ph_toggle;
+string ph_points_path;
+string ph_tets_path;
 
 // Mode 0: ./st-visualizer 0 <config.json file path>
 // Mode 1: ./st-visualizer 1 <config.json file content>
@@ -71,6 +76,10 @@ int main(int argc, char *argv[])
     {
         featureCols.push_back(name.get<unsigned>());
     }
+
+    ph_toggle = config.at("PHExport").get<bool>();
+    ph_points_path = config.at("PHPoints").get<string>();
+    ph_tets_path = config.at("PHTets").get<string>();
 
     const vector<pair<vector<coord>, vector<coord>>> alignmentValues = importAlignments(alignmentFile);
 
@@ -253,7 +262,11 @@ int main(int argc, char *argv[])
     std::chrono::steady_clock::time_point end_export_io = std::chrono::high_resolution_clock::now();
     export_io = duration_cast<std::chrono::microseconds>(end_export_io - start_export_io).count();
 
-    export_timing(results.num_points);
+    if (config.at("timingExport").get<bool>())
+    {
+        string timing_path = config.at("timing").get<string>();
+        export_timing(results.num_points, timing_path);
+    }
 
     log("Exiting.");
     return 0;
