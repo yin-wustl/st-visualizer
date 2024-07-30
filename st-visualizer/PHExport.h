@@ -25,8 +25,8 @@ inline void PHExport(const vector<Eigen::Vector3f> &points, const vector<vector<
         return;
     }
 
-    std::ofstream file_points(ph_points_path, std::ios_base::app);
-    std::ofstream file_tets(ph_tets_path, std::ios_base::app);
+    std::ofstream file_points(ph_points_path, std::ios_base::out);
+    std::ofstream file_tets(ph_tets_path, std::ios_base::out);
     if (file_points.is_open() && file_tets.is_open())
     {
         for (int i = 0; i < points.size(); i++)
