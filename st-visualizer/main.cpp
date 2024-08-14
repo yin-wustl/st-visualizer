@@ -102,8 +102,8 @@ int main(int argc, char *argv[])
 
     std::chrono::steady_clock::time_point start_contour_3d = std::chrono::high_resolution_clock::now();
     auto allpts = concatMatrixes(results.slices);
-    auto ctrs3dVals = getVolumeContours(allpts, flatten<std::vector<float>>(results.values), shrink);
-    auto ctrs3dClusters = getVolumeContours(allpts, flatten<std::vector<float>>(results.clusters), shrink);
+    auto ctrs3dVals = getVolumeContours(allpts, flatten<std::vector<float>>(results.values), shrink, true);
+    auto ctrs3dClusters = getVolumeContours(allpts, flatten<std::vector<float>>(results.clusters), shrink, false);
     auto ptClusIndex = mapVector(results.clusters, std::function(
                                                        [](const std::vector<std::vector<float>> &layer, size_t)
                                                        {

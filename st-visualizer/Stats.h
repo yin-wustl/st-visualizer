@@ -285,7 +285,7 @@ vector<vector<int>> countAllComponents(vector<std::pair<std::vector<Eigen::Vecto
 }
 
 vector<pair<vector<Eigen::Vector3f>, vector<vector<int>>>>
-getVolumeContours(const Eigen::Matrix3Xf &pts, vector<vector<float>> vals, float shrink)
+getVolumeContours(const Eigen::Matrix3Xf &pts, vector<vector<float>> vals, float shrink, bool material)
 {
 	const size_t nmat = vals[0].size();
     std::chrono::steady_clock::time_point start_contour_tetgen = std::chrono::high_resolution_clock::now();
@@ -303,7 +303,10 @@ getVolumeContours(const Eigen::Matrix3Xf &pts, vector<vector<float>> vals, float
 	}
 	auto [verts, segs, segmats] = contourTetMultiDC(pts_vector, tets, vals);
 
-    PHExport(pts_vector, vals, tets);
+    if (material)
+    {
+        PHExport(pts_vector, vals, tets);
+    }
 
 	vector<vector<int>> new_segs;
 	vector<pair<int, int>> new_segmats;

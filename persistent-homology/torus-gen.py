@@ -47,6 +47,7 @@ for i in range(num_slices):
                 features = [value, 0]
             else:
                 features = [max(value, -1), 0]
+                # features = [0, 1]
             cluster = 0
             data.append([slice_id, is_tissue, cluster, x, y] + features)
     table = pd.DataFrame(data, columns=headers)
