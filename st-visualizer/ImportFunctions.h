@@ -18,6 +18,9 @@ using std::string;
 using std::vector;
 using std::function;
 
+extern int wid_buffer;
+extern int num_ransac;
+
 struct tsv_return_type
 {
     int num_points;

@@ -29,6 +29,8 @@ unsigned long export_io;
 bool ph_toggle;
 string ph_points_path;
 string ph_tets_path;
+int wid_buffer;
+int num_ransac;
 
 // Mode 0: ./st-visualizer 0 <config.json file path>
 // Mode 1: ./st-visualizer 1 <config.json file content>
@@ -80,6 +82,8 @@ int main(int argc, char *argv[])
     ph_toggle = config.at("PHExport").get<bool>();
     ph_points_path = config.at("PHPoints").get<string>();
     ph_tets_path = config.at("PHTets").get<string>();
+    wid_buffer = config.at("GrowWidth").get<int>();
+    num_ransac = config.at("NumRansac").get<int>();
 
     const vector<pair<vector<coord>, vector<coord>>> alignmentValues = importAlignments(alignmentFile);
 

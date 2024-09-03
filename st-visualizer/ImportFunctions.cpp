@@ -10,7 +10,6 @@
 #include <limits>
 #include <stdexcept>
 #include <utility>
-#include <chrono>
 
 using std::pair;
 using std::string;
@@ -19,9 +18,8 @@ using std::vector;
 unsigned long import_io;
 unsigned long preprocessing;
 unsigned long cover_and_grow;
-
-constexpr int wid_buffer = 2;
-constexpr int num_ransac = 20;
+//int wid_buffer;
+//int num_ransac;
 
 // From https://stackoverflow.com/questions/14265581/parse-split-a-string-in-c-using-string-delimiter-standard-c
 vector<string> splitString(const string &s, const string &delimiter)

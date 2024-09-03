@@ -3,6 +3,8 @@
     "alignmentFile": "/Users/yin/Code/masters-project/st-visualizer-data/batch-2/HT112C1_H1/alignments.csv",
     "target": "/Users/yin/Code/masters-project/st-visualizer/persistent-homology/assets/HT112C1/output.json",
     "shrink": 0,
+    "GrowWidth": 10,
+    "NumRansac": 20,
     "sliceNames": [
         "HT112C1-U1_ST_Bn1",
         "HT112C1-U2_ST_Bn1"
