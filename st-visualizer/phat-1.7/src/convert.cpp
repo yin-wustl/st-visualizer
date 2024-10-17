@@ -17,7 +17,7 @@
     along with PHAT.  If not, see <http://www.gnu.org/licenses/>. */
 
 
-#include <phat/representations/vector_vector.h>
+#include <phat/representations/default_representations.h>
 #include <phat/boundary_matrix.h>
 #include <phat/helpers/dualize.h>
 

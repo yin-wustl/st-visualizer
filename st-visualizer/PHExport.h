@@ -2,6 +2,9 @@
 // Created by Yin Li on 5/18/24.
 //
 
+#ifndef ST_VISUALIZER_PHEXPORT_H
+#define ST_VISUALIZER_PHEXPORT_H
+
 #include <Eigen/Eigen>
 #include <vector>
 #include <iostream>
@@ -15,43 +18,12 @@ extern bool ph_toggle;
 extern string ph_points_path;
 extern string ph_tets_path;
 
-#ifndef ST_VISUALIZER_PHEXPORT_H
-#define ST_VISUALIZER_PHEXPORT_H
-
-inline void PHExport(const vector<Eigen::Vector3f> &points, const vector<vector<float>> &materials, const vector<vector<int>> &tets)
+inline void export_ph(const vector<Eigen::Vector3f> &points, const vector<vector<float>> &materials, const vector<vector<int>> &tets)
 {
     if (!ph_toggle)
     {
         return;
     }
-
-//    int point_size = points.size();
-//    for (vector<int> tet : tets)
-//    {
-//        for (int vertex : tet)
-//        {
-//            if (vertex >= point_size)
-//            {
-//                throw std::runtime_error("tet index out of bound");
-//            }
-//        }
-//    }
-
-//    int count = 0;
-//
-//    for (vector<float> vals : materials)
-//    {
-//        stringstream ss;
-//        ss.setf(std::ios::fixed);
-//        ss.precision(16);
-//        for (float val : vals)
-//        {
-//            ss << val << "\t";
-//        }
-//        ss << std::endl;
-//        std::cout << ss.rdbuf();
-//    }
-
 
     std::ofstream file_points(ph_points_path, std::ios_base::out);
     std::ofstream file_tets(ph_tets_path, std::ios_base::out);

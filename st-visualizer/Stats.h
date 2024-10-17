@@ -5,6 +5,7 @@
 #include "UtilityFunctions.h"
 #include "Timing.h"
 #include "PHExport.h"
+#include "PHCompute.h"
 
 #include <algorithm>
 #include <queue>
@@ -305,7 +306,8 @@ getVolumeContours(const Eigen::Matrix3Xf &pts, vector<vector<float>> vals, float
 
     if (material)
     {
-        PHExport(pts_vector, vals, tets);
+        export_ph(pts_vector, vals, tets);
+//        compute_ph(vals, tets);
     }
 
 	vector<vector<int>> new_segs;
