@@ -8,6 +8,7 @@ include_directories(eigen-3.4.0)
 include_directories(tetgen-1.6.0)
 include_directories(triangle-1.6)
 include_directories(phat-1.7/include)
+#include_directories(phat-1.6/include)
 
 add_executable(st-visualizer
         tetgen-1.6.0/predicates.cxx

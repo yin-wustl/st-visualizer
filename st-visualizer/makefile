@@ -1,3 +1,5 @@
+# FIXME: obsolete, do not use makefile to compile the project
+
 CC = clang
 CXX = clang++
 BIN = ./bin/

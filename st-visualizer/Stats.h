@@ -307,7 +307,7 @@ getVolumeContours(const Eigen::Matrix3Xf &pts, vector<vector<float>> vals, float
     if (material)
     {
         export_ph(pts_vector, vals, tets);
-//        compute_ph(vals, tets);
+        compute_ph(vals, tets);
     }
 
 	vector<vector<int>> new_segs;

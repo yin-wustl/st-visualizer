@@ -1,1 +1,31 @@
-{"fileName": "/Users/yin/Code/masters-project/st-visualizer/persistent-homology/assets/toy-data-4/data.tsv", "alignmentFile": "/Users/yin/Code/masters-project/st-visualizer/persistent-homology/assets/toy-data-4/alignment.csv", "target": "/Users/yin/Code/masters-project/st-visualizer/persistent-homology/assets/toy-data-4/output.json", "shrink": 0, "GrowWidth": 1, "NumRansac": 2, "sliceNames": ["slice_0", "slice_1"], "featureCols": [5, 6], "sliceIndex": 0, "tissueIndex": 1, "rowIndex": 3, "colIndex": 4, "clusterIndex": 2, "zDistance": 2, "resultExport": false, "objExport": false, "featureObj": "/Users/yin/Code/masters-project/st-visualizer/persistent-homology/assets/toy-data-4/features/", "clusterObj": "/Users/yin/Code/masters-project/st-visualizer/persistent-homology/assets/toy-data-4/clusters/", "timingExport": false, "timing": "/Users/yin/Code/masters-project/st-visualizer/persistent-homology/assets/toy-data-4/timing.csv", "PHExport": true, "PHPoints": "/Users/yin/Code/masters-project/st-visualizer/persistent-homology/assets/toy-data-4/points.csv", "PHTets": "/Users/yin/Code/masters-project/st-visualizer/persistent-homology/assets/toy-data-4/tets.csv"}
+{
+    "fileName": "/Users/yin/Code/masters-project/st-visualizer/persistent-homology/assets/toy-data-4/data.tsv",
+    "alignmentFile": "/Users/yin/Code/masters-project/st-visualizer/persistent-homology/assets/toy-data-4/alignment.csv",
+    "target": "/Users/yin/Code/masters-project/st-visualizer/persistent-homology/assets/toy-data-4/output.json",
+    "shrink": 0,
+    "GrowWidth": 1,
+    "NumRansac": 2,
+    "sliceNames": [
+        "slice_0",
+        "slice_1"
+    ],
+    "featureCols": [
+        5,
+        6
+    ],
+    "sliceIndex": 0,
+    "tissueIndex": 1,
+    "rowIndex": 3,
+    "colIndex": 4,
+    "clusterIndex": 2,
+    "zDistance": 2,
+    "resultExport": false,
+    "objExport": false,
+    "featureObj": "/Users/yin/Code/masters-project/st-visualizer/persistent-homology/assets/toy-data-4/features/",
+    "clusterObj": "/Users/yin/Code/masters-project/st-visualizer/persistent-homology/assets/toy-data-4/clusters/",
+    "timingExport": false,
+    "timing": "/Users/yin/Code/masters-project/st-visualizer/persistent-homology/assets/toy-data-4/timing.csv",
+    "PHExport": false,
+    "PHPoints": "/Users/yin/Code/masters-project/st-visualizer/persistent-homology/assets/toy-data-4/points.csv",
+    "PHTets": "/Users/yin/Code/masters-project/st-visualizer/persistent-homology/assets/toy-data-4/tets.csv"
+}

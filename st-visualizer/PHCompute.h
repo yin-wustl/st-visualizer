@@ -13,6 +13,7 @@
 #include <iostream>
 #include <iomanip>
 #include <stack>
+#include <set>
 
 #include <Eigen/Eigen>
 
@@ -36,17 +37,45 @@ using std::tuple;
 using std::unordered_map;
 using std::unordered_set;
 using std::stack;
+using std::set;
 
 struct SimplexHash {
-    std::size_t operator()(const vector<int>& simplex) const {
+    std::size_t operator()(const vector<int>& simplex) const
+    {
         size_t result = 0;
         for (int vertex : simplex)
         {
+            // FIXME: bad implementation, frequent collisions
             result = result ^ std::hash<int>{}(vertex);
         }
+
+//        vector<int> sorted_simplex = simplex;
+//        std::sort(sorted_simplex.begin(), sorted_simplex.end());
+//        for(const int &i : sorted_simplex) {
+//            result ^= i + 0x9e3779b9 + (result << 6) + (result >> 2);
+//        }
+
         return result;
     }
 };
+
+struct SimplexEqual {
+    bool operator()(const std::vector<int>& a, const std::vector<int>& b) const
+    {
+        if (a.size() != b.size()) return false;
+
+        std::unordered_map<int, int> count;
+        for (int num: a) count[num]++;
+        for (int num: b)
+        {
+            if (--count[num] < 0) return false;
+        }
+
+        return true;
+    }
+};
+
+
 
 vector<vector<int>> get_boundary(vector<int> &simplex)
 {
@@ -77,7 +106,7 @@ vector<vector<int>> get_boundary(vector<int> &simplex)
     return result;
 }
 
-vector<phat::index> get_boundary_idx(vector<int> &simplex, unordered_map<vector<int>, int, SimplexHash> &simplex_to_ind)
+vector<phat::index> get_boundary_idx(vector<int> &simplex, unordered_map<vector<int>, int, SimplexHash, SimplexEqual> &simplex_to_ind)
 {
     vector<phat::index> result;
     if (simplex.size() == 1)
@@ -114,29 +143,12 @@ bool compare_alpha(const tuple<vector<int>, float> &t_1, const tuple<vector<int>
     float alpha_2 = std::get<1>(t_2);
     int dimension_1 = std::get<0>(t_1).size();
     int dimension_2 = std::get<0>(t_2).size();
-//
-//    if (alpha_1 < alpha_2)
-//    {
-//        return true;
-//    } else if (alpha_1 > alpha_2)
-//    {
-//        return false;
-//    } else
-//    {
-//        if (dimension_1 <= dimension_2)
-//        {
-//            return true;
-//        }
-//        else
-//        {
-//            return false;
-//        }
-//    }
 
     return std::tie(alpha_1, dimension_1) < std::tie(alpha_2, dimension_2);
 }
 
-void print_vector(const vector<int>& vec) {
+void print_vector(const vector<int>& vec)
+{
     vector<int> sorted = vec;
     std::sort(sorted.begin(), sorted.end());
 
@@ -147,24 +159,77 @@ void print_vector(const vector<int>& vec) {
     std::cout << "}";
 }
 
-void print_tuple(const tuple<vector<int>, float>& t) {
-    const std::vector<int>& vec = std::get<0>(t);
-    float f = std::get<1>(t);
+// for diagnostic purpose only
+void write_tuples(const vector<tuple<vector<int>, float>>& tuples)
+{
+    string filename = "tmp.txt";
+    std::ofstream outfile(filename, std::ios_base::out);
 
-    print_vector(vec);
-    std::cout << std::fixed << std::setprecision(5) << f << std::endl;
+    if (!outfile.is_open()) {
+        std::cerr << "Error opening file: " << filename << std::endl;
+        return;
+    }
+
+    for (const tuple<vector<int>, float> tuple : tuples)
+    {
+        vector<int> sorted = std::get<0>(tuple);
+        std::sort(sorted.begin(), sorted.end());
+        for (const int& val : sorted) {
+            outfile << val << " ";
+        }
+        outfile << std::fixed << std::setprecision(5) << std::get<1>(tuple) << std::endl;
+    }
+
+    outfile.close();
 }
 
-void print_filtration(const vector<tuple<vector<int>, float>> &filtration)
+void print_tuples(const vector<tuple<vector<int>, float>>& tuples)
 {
-    for (const tuple<vector<int>, float> &t : filtration)
+    for (auto tuple : tuples)
     {
-        if (std::get<1>(t) < 2.0)
+        const std::vector<int>& vec = std::get<0>(tuple);
+        float f = std::get<1>(tuple);
+
+        print_vector(vec);
+        std::cout << std::fixed << std::setprecision(5) << f << std::endl;
+    }
+}
+
+void print_filtration(const vector<tuple<vector<int>, float>> &filtration, bool print, bool write)
+{
+    if (print)
+    {
+        print_tuples(filtration);
+    }
+    if (write)
+    {
+        write_tuples(filtration);
+    }
+}
+
+template <typename ColumnType>
+void boundary_matrix_diagnose(const phat::boundary_matrix<ColumnType> &boundary_matrix, const vector<tuple<vector<int>, float>> &filtration, unordered_map<vector<int>, int, SimplexHash, SimplexEqual> simplex_to_ind)
+{
+    const int num_simplices = boundary_matrix.get_num_cols();
+    for(int i = num_simplices - 1; i >= 0; i--)
+    {
+        vector<phat::index> col;
+        boundary_matrix.get_col(i, col);
+
+        vector<int> simplex = std::get<0>(filtration[i]);
+        vector<phat::index> boundaries = get_boundary_idx(simplex, simplex_to_ind);
+
+        std::vector<int> col_int(col.begin(), col.end());
+        std::vector<int> boundaries_int(boundaries.begin(), boundaries.end());
+        if (!SimplexEqual()(col_int, boundaries_int))
         {
-            print_tuple(t);
+            std::cout << "boundary error! " << std::endl;
+            print_vector(col_int);
+            print_vector(boundaries_int);
         }
     }
 }
+
 
 void compute_ph(const vector<vector<float>> &materials, const vector<vector<int>> &tets)
 {
@@ -174,22 +239,32 @@ void compute_ph(const vector<vector<float>> &materials, const vector<vector<int>
     const vector<vector<int>> edge_combinations = {{0, 1}, {0, 2}, {0, 3}, {1, 2}, {1, 3}, {2, 3}};
     const vector<vector<int>> triangle_combinations = {{0, 1, 2}, {0, 1, 3}, {0, 2, 3}, {1, 2, 3}};
 
-    unordered_map<vector<int>, bool, SimplexHash> simplex_visited;
+    // FIXME: why didn't the simplex hash work?
+    unordered_map<vector<int>, bool, SimplexHash, SimplexEqual> simplex_visited;
     vector<vector<int>> edges;
     vector<vector<int>> triangles;
 
-    for (const vector<int> &tet : tets)
+    for (vector<int> tet : tets)
     {
         for (const vector<int> &combination : edge_combinations)
         {
+//            vector<int> edge = {tet[combination[0]], tet[combination[1]]};
+//            std::sort(edge.begin(), edge.end());
+//            edges.insert(edge);
+
             const vector<int> edge = {tet[combination[0]], tet[combination[1]]};
             if (!simplex_visited[edge])
             {
                 edges.push_back(edge);
+                simplex_visited[edge] = true;
             }
         }
         for (const vector<int> &combination : triangle_combinations)
         {
+//            vector<int> triangle = {tet[combination[0]], tet[combination[1]], tet[combination[2]]};
+//            std::sort(triangle.begin(), triangle.end());
+//            triangles.insert(triangle);
+
             const vector<int> triangle = {tet[combination[0]], tet[combination[1]], tet[combination[2]]};
             if (!simplex_visited[triangle])
             {
@@ -198,6 +273,8 @@ void compute_ph(const vector<vector<float>> &materials, const vector<vector<int>
             }
         }
     }
+
+    std::cout << "there are " << num_points << " points, " << edges.size() << " edges, " << triangles.size() << " triangles, " << tets.size() << " tets in filtratiion" << std::endl;
 
     // tuple: largest value, second largest value, index of largest value
     vector<tuple<float, float, int>> points_properties(num_points);
@@ -275,7 +352,9 @@ void compute_ph(const vector<vector<float>> &materials, const vector<vector<int>
 
         int num_simplices = filtration.size();
         std::sort(filtration.begin(), filtration.end(), compare_alpha);
-        unordered_map<vector<int>, int, SimplexHash> simplex_to_ind;
+        print_filtration(filtration, false, true);
+
+        unordered_map<vector<int>, int, SimplexHash, SimplexEqual> simplex_to_ind;
         for (int i = 0; i < filtration.size(); i++)
         {
             vector<int> &simplex = std::get<0>(filtration[i]);
@@ -283,7 +362,7 @@ void compute_ph(const vector<vector<float>> &materials, const vector<vector<int>
         }
 
         // initialize boundary matrix
-        phat::boundary_matrix<phat::bit_tree_pivot_column> boundary_matrix;
+        phat::boundary_matrix<phat::sparse_pivot_column> boundary_matrix;
         boundary_matrix.set_num_cols(num_simplices);
 
         for (int i = 0; i < num_simplices; i++)
@@ -292,12 +371,15 @@ void compute_ph(const vector<vector<float>> &materials, const vector<vector<int>
             vector<int> &simplex = std::get<0>(tuple);
             int dimension = simplex.size() - 1;
             vector<phat::index> boundary_idx = get_boundary_idx(simplex, simplex_to_ind);
+            std::sort(boundary_idx.begin(), boundary_idx.end());
             boundary_matrix.set_col(i, boundary_idx);
             boundary_matrix.set_dim(i, dimension);
         }
 
+        boundary_matrix_diagnose(boundary_matrix, filtration, simplex_to_ind);
+
         phat::persistence_pairs pairs;
-        phat::compute_persistence_pairs< phat::twist_reduction >( pairs, boundary_matrix );
+        phat::compute_persistence_pairs< phat::standard_reduction >( pairs, boundary_matrix );
         pairs.sort();
 
         // print the pairs:
@@ -306,6 +388,8 @@ void compute_ph(const vector<vector<float>> &materials, const vector<vector<int>
         for( phat::index idx = 0; idx < pairs.get_num_pairs(); idx++ )
             std::cout << "Birth: " << pairs.get_pair( idx ).first << ", Death: " << pairs.get_pair( idx ).second << std::endl;
     }
+
+
 }
 
 #endif //ST_VISUALIZER_PHCOMPUTE_H
